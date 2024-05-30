@@ -1,6 +1,7 @@
 package snowflakeid
 
 import (
+	"errors"
 	"sync"
 	"testing"
 
@@ -23,7 +24,7 @@ func TestSnowflakeId(t *testing.T) {
 		set[worker.NextSnowflakeID()] = true
 	}
 
-	cnt := 1000
+	cnt := 100000
 	for i := 0; i < cnt; i++ {
 		wg.Add(1)
 		go f(wg)
@@ -31,4 +32,9 @@ func TestSnowflakeId(t *testing.T) {
 
 	wg.Wait()
 	assert.Equal(t, cnt, len(set))
+}
+
+func TestInvalidWorkId(t *testing.T) {
+	_, err := NewWorker(-1)
+	assert.Error(t, err, errors.New("Worker ID 不合法"))
 }
