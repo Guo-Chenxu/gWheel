@@ -1,3 +1,3 @@
-module gBloomAndCuckooFilter
+module gWheel
 
 go 1.20
