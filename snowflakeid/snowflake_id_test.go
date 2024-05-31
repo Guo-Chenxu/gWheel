@@ -18,10 +18,12 @@ func TestSnowflakeId(t *testing.T) {
 	set := make(map[int64]bool, 1000)
 
 	f := func(wg *sync.WaitGroup) {
+		defer wg.Done()
+
+		id := worker.NextSnowflakeID()
 		lock.Lock()
 		defer lock.Unlock()
-		defer wg.Done()
-		set[worker.NextSnowflakeID()] = true
+		set[id] = true
 	}
 
 	cnt := 100000
@@ -31,6 +33,7 @@ func TestSnowflakeId(t *testing.T) {
 	}
 
 	wg.Wait()
+	t.Log("set len:", len(set))
 	assert.Equal(t, cnt, len(set))
 }
 
